@@ -11,14 +11,19 @@ let books = {
       10: {"author": "Samuel Beckett","title": "Molloy, Malone Dies, The Unnamable, the trilogy", "reviews": {} }
 }
 
-function bookList(){
-    return Object.keys(books).map(key=>{
-        const book = {id: key, ...books[key]};
-        return book;
+function itemList(items){
+    return Object.keys(items).map(key=>{
+        const item = {id: key, ...items[key]};
+        return item;
     })
+}
+
+function bookList(){
+    return itemList(books);
 }
 
 module.exports={
     books,
-    bookList
+    bookList,
+    itemList
 };
