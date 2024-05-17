@@ -12,11 +12,18 @@ app.use("/customer",session({secret:"fingerprint_customer",resave: true, saveUni
 
 app.use("/customer/auth/*", function auth(req,res,next){
 //Write the authenication mechanism here
-    const { accessToken } = req.session.authorization
-    console.log(accessToken);
-    jwt.verify(accessToken, "secret", (err, data)=>{
-        console.log(data);
-    })
+    if (req.session.authorization){
+        const { accessToken } = req.session.authorization
+        jwt.verify(accessToken, "secret", (err, data)=>{
+            if (err){
+                return res.status(403).json({message: `Error on validating token ${err}`});
+            }
+            req["user"] = data.username;
+            next();
+        })
+    }else{
+        return res.status(403).json({message: "Authorization required."})
+    }
 });
  
 const PORT =5000;
@@ -24,4 +31,4 @@ const PORT =5000;
 app.use("/customer", customer_routes);
 app.use("/", genl_routes);
 
-app.listen(PORT,()=>console.log("Server is running"));
+app.listen(PORT, "0.0.0.0",()=>console.log("Server is running"));

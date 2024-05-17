@@ -1,6 +1,6 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-let books = require("./booksdb.js");
+let { books } = require("./booksdb.js");
 const regd_users = express.Router();
 
 let users = [];
@@ -37,8 +37,30 @@ regd_users.post("/login", (req,res) => {
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  const book = books[req.params.isbn];
+  if (!book){
+    return res.status(404).json({message: "Book not found"})
+  }
+  if (!req.body.message || !req.body.stars){
+    return res.status(400).json({message: "Message and stars are required"})
+  }
+  const review = {
+    message: req.body.message,
+    stars: req.body.stars,
+    username: req.user
+  }
+  book.reviews[req.user] = review
+  return res.status(200).json({message: "Successfully add a review."});
 });
+
+regd_users.delete("/auth/review/:isbn", (req, res)=>{
+  const book = books[req.params.isbn];
+  if (!book){
+    return res.status(404).json({message: "Book not found"})
+  }
+  delete book.reviews[req.user];
+  return res.status(200).json({message: "Successfully deleted the review."})
+})
 
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
