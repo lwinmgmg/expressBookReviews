@@ -18,12 +18,17 @@ function itemList(items){
     })
 }
 
-function bookList(){
+async function bookList(){
     return itemList(books);
+}
+
+async function getBookByID(recordId){
+    return books[recordId];
 }
 
 module.exports={
     books,
     bookList,
-    itemList
+    itemList,
+    getBookByID
 };
