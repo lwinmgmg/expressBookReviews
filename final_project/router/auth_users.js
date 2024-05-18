@@ -41,12 +41,12 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   if (!book){
     return res.status(404).json({message: "Book not found"})
   }
-  if (!req.body.message || !req.body.stars){
+  if (!req.query.review || !req.query.stars){
     return res.status(400).json({message: "Message and stars are required"})
   }
   const review = {
-    message: req.body.message,
-    stars: req.body.stars,
+    review: req.query.review,
+    stars: req.query.stars,
     username: req.user
   }
   book.reviews[req.user] = review
